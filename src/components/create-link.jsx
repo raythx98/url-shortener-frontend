@@ -1,3 +1,4 @@
+import { formatLink } from "@/helper/formatlink";
 import {Button} from "@/components/ui/button";
 import {
   Dialog,
@@ -31,13 +32,13 @@ export function CreateLink() {
   const [errors, setErrors] = useState({});
   const [formValues, setFormValues] = useState({
     title: "",
-    longUrl: longLink ? longLink : "",
+    fullUrl: longLink ? longLink : "",
     customUrl: "",
   });
 
   const schema = yup.object().shape({
     title: yup.string().required("Title is required"),
-    longUrl: yup
+    fullUrl: yup
       .string()
       .url("Must be a valid URL")
       .required("Long URL is required"),
@@ -60,13 +61,20 @@ export function CreateLink() {
 
   useEffect(() => {
     if (error === null && data) {
-      navigate(`/link/${data[0].id}`);
+      navigate(`/link/${data.id}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, data]);
 
   const createNewLink = async () => {
     setErrors([]);
+    var proposedLink = formatLink(formValues.fullUrl);
+    var oldLink = formValues.fullUrl
+    const newErrors = {};
+    if (formValues.fullUrl != proposedLink) {
+      formValues.fullUrl = proposedLink;
+      newErrors["fullUrl"] = `Invalid URL. Corrected from '${oldLink}' to '${proposedLink}'. Please try again.`;
+    }
     try {
       await schema.validate(formValues, {abortEarly: false});
 
@@ -75,14 +83,11 @@ export function CreateLink() {
 
       await fnCreateUrl(blob);
     } catch (e) {
-      const newErrors = {};
-
       e?.inner?.forEach((err) => {
         newErrors[err.path] = err.message;
       });
-
-      setErrors(newErrors);
     }
+    setErrors(newErrors);
   };
 
   return (
@@ -99,8 +104,8 @@ export function CreateLink() {
         <DialogHeader>
           <DialogTitle className="font-bold text-2xl">Create New</DialogTitle>
         </DialogHeader>
-        {formValues?.longUrl && (
-          <QRCode ref={ref} size={250} value={formValues?.longUrl} />
+        {formValues?.fullUrl && (
+          <QRCode ref={ref} size={250} value={formValues?.fullUrl} />
         )}
 
         <Input
@@ -111,14 +116,14 @@ export function CreateLink() {
         />
         {errors.title && <Error message={errors.title} />}
         <Input
-          id="longUrl"
+          id="fullUrl"
           placeholder="Enter your Loooong URL"
-          value={formValues.longUrl}
+          value={formValues.fullUrl}
           onChange={handleChange}
         />
-        {errors.longUrl && <Error message={errors.longUrl} />}
+        {errors.fullUrl && <Error message={errors.fullUrl} />}
         <div className="flex items-center gap-2">
-          <Card className="p-2">trimrr.in</Card> /
+          <Card className="p-2">http://localhost:5173</Card> /
           <Input
             id="customUrl"
             placeholder="Custom Link (optional)"

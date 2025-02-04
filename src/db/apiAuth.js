@@ -1,52 +1,60 @@
-import supabase, {supabaseUrl} from "./supabase";
+import { get, post } from './api';
+import { remove, set } from "@/helper/session";
 
 export async function login({email, password}) {
-  const {data, error} = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  try {
+    var response = await post("auth/v1/login", {
+      email: email, 
+      password: password,
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("Unable to login: " + error);
+  }
 
-  if (error) throw new Error(error.message);
-
-  return data;
+  var json = await response.json();
+  set(json);
+  return json;
 }
 
 export async function signup({name, email, password, profile_pic}) {
-  const fileName = `dp-${name.split(" ").join("-")}-${Math.random()}`;
-
-  const {error: storageError} = await supabase.storage
-    .from("profile_pic")
-    .upload(fileName, profile_pic);
-
-  if (storageError) throw new Error(storageError.message);
-
-  const {data, error} = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        name,
-        profile_pic: `${supabaseUrl}/storage/v1/object/public/profile_pic/${fileName}`,
-      },
-    },
-  });
-
-  if (error) throw new Error(error.message);
-
-  return data;
+  try {
+    var response = await post("auth/v1/register", {
+      email: email, 
+      password: password,
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("Unable to register: " + error);
+  }
 }
 
 export async function getCurrentUser() {
-  const {data: session, error} = await supabase.auth.getSession();
-  if (!session.session) return null;
+  var response = await get("users/v1");
+  if (response.status === 401) {
+    return null; // User not logged in
+  }
 
-  // const {data, error} = await supabase.auth.getUser();
-
-  if (error) throw new Error(error.message);
-  return session.session?.user;
+  const responseJson = await response.json();
+  return responseJson;
 }
 
 export async function logout() {
-  const {error} = await supabase.auth.signOut();
-  if (error) throw new Error(error.message);
+  try {
+    var response = await post("auth/v1/logout");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("Unable to logout: " + error);
+  }
+
+  remove();
 }

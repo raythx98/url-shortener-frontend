@@ -1,3 +1,4 @@
+import { formatLink } from "@/helper/formatlink";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {useState} from "react";
@@ -15,7 +16,7 @@ const LandingPage = () => {
 
   const handleShorten = (e) => {
     e.preventDefault();
-    if (longUrl) navigate(`/auth?createNew=${longUrl}`);
+    if (longUrl) navigate(`/auth?createNew=${formatLink(longUrl)}`);
   };
 
   return (
@@ -28,8 +29,7 @@ const LandingPage = () => {
         className="sm:h-14 flex flex-col sm:flex-row w-full md:w-2/4 gap-2"
       >
         <Input
-          type="url"
-          placeholder="Enter your loooong URL"
+          placeholder="Enter your Loooong URL"
           value={longUrl}
           onChange={(e) => setLongUrl(e.target.value)}
           className="h-full flex-1 py-4 px-4"
@@ -42,7 +42,7 @@ const LandingPage = () => {
         src="/banner1.jpg" // replace with 2 in small screens
         className="w-full my-11 md:px-11"
       />
-      <Accordion type="multiple" collapsible className="w-full md:px-11">
+      <Accordion type="multiple" collapsible="true" className="w-full md:px-11">
         <AccordionItem value="item-1">
           <AccordionTrigger>
             How does the Trimrr URL shortener works?

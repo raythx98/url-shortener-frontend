@@ -13,37 +13,22 @@ import Error from "@/components/error";
 import useFetch from "@/hooks/use-fetch";
 
 import {getUrls} from "@/db/apiUrls";
-import {getClicksForUrls} from "@/db/apiClicks";
-import {UrlState} from "@/context";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const {user} = UrlState();
-  const {loading, error, data: urls, fn: fnUrls} = useFetch(getUrls, user.id);
-  const {
-    loading: loadingClicks,
-    data: clicks,
-    fn: fnClicks,
-  } = useFetch(
-    getClicksForUrls,
-    urls?.map((url) => url.id)
-  );
+  const {loading, error, data, fn: fnUrls} = useFetch(getUrls);
 
   useEffect(() => {
     fnUrls();
   }, []);
 
-  const filteredUrls = urls?.filter((url) =>
+  const filteredUrls = data?.urls?.filter((url) =>
     url.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  useEffect(() => {
-    if (urls?.length) fnClicks();
-  }, [urls?.length]);
-
   return (
     <div className="flex flex-col gap-8">
-      {(loading || loadingClicks) && (
+      {(loading) && (
         <BarLoader width={"100%"} color="#36d7b7" />
       )}
       <div className="grid grid-cols-2 gap-4">
@@ -52,7 +37,7 @@ const Dashboard = () => {
             <CardTitle>Links Created</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{urls?.length}</p>
+            <p>{data?.urls?.length}</p>
           </CardContent>
         </Card>
         <Card>
@@ -60,7 +45,7 @@ const Dashboard = () => {
             <CardTitle>Total Clicks</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{clicks?.length}</p>
+            <p>{data?.total_clicks}</p>
           </CardContent>
         </Card>
       </div>

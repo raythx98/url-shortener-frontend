@@ -1,53 +1,70 @@
+import {UAParser} from "ua-parser-js";
+import { get, post, del } from "./api";
 import supabase, {supabaseUrl} from "./supabase";
 
-export async function getUrls(user_id) {
-  let {data, error} = await supabase
-    .from("urls")
-    .select("*")
-    .eq("user_id", user_id);
-
-  if (error) {
+export async function getUrls() {
+  try {
+    var response = await get("urls/v1");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
     console.error(error);
-    throw new Error("Unable to load URLs");
+    throw new Error("Unable to load URLs: " + error);
   }
 
-  return data;
+  var json = await response.json()
+  return json;
 }
 
-export async function getUrl({id, user_id}) {
-  const {data, error} = await supabase
-    .from("urls")
-    .select("*")
-    .eq("id", id)
-    .eq("user_id", user_id)
-    .single();
-
-  if (error) {
+export async function getUrl({id}) {
+  try {
+    var response = await get(`urls/v1/${id}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
     console.error(error);
-    throw new Error("Short Url not found");
+    throw new Error("Short Url not found: " + error);
   }
 
-  return data;
+  const json = await response.json();
+  return json;
 }
 
-export async function getLongUrl(id) {
-  let {data: shortLinkData, error: shortLinkError} = await supabase
-    .from("urls")
-    .select("id, original_url")
-    .or(`short_url.eq.${id},custom_url.eq.${id}`)
-    .single();
+const parser = new UAParser();
 
-  if (shortLinkError && shortLinkError.code !== "PGRST116") {
-    console.error("Error fetching short link:", shortLinkError);
-    return;
+export async function redirect(id) {
+
+  const res = parser.getResult();
+  const device = res.type || "desktop"; // Default to desktop if type is not detected
+
+  const location = await fetch("https://ipapi.co/json");
+  const {city, country_name: country} = await location.json();
+
+  try {
+    var response = await post(`urls/v1/redirect/${id}`, {
+      city: city,
+      country: country,
+      device: device,
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("Full Url not found: " + error);
   }
 
-  return shortLinkData;
+  const json = await response.json();
+
+  // Redirect to the original URL
+  window.location.href = json.original_url;
 }
 
-export async function createUrl({title, longUrl, customUrl, user_id}, qrcode) {
-  const short_url = Math.random().toString(36).substr(2, 6);
-  const fileName = `qr-${short_url}`;
+export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
+  const image_key = Math.random().toString(36).substr(2, 6);
+  const fileName = `qr-${image_key}`;
 
   const {error: storageError} = await supabase.storage
     .from("qrs")
@@ -57,35 +74,31 @@ export async function createUrl({title, longUrl, customUrl, user_id}, qrcode) {
 
   const qr = `${supabaseUrl}/storage/v1/object/public/qrs/${fileName}`;
 
-  const {data, error} = await supabase
-    .from("urls")
-    .insert([
-      {
-        title,
-        user_id,
-        original_url: longUrl,
-        custom_url: customUrl || null,
-        short_url,
-        qr,
-      },
-    ])
-    .select();
-
-  if (error) {
+  try {
+    var response = await post(`urls/v1`, {
+      title: title,
+      full_url: fullUrl,
+      custom_url: customUrl,
+      qr: qr,
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
     console.error(error);
-    throw new Error("Error creating short URL");
+    throw new Error("Unable to create URL " + error);
   }
-
-  return data;
+  return await response.json();
 }
 
 export async function deleteUrl(id) {
-  const {data, error} = await supabase.from("urls").delete().eq("id", id);
-
-  if (error) {
+  try {
+    var response = await del(`urls/v1/${id}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+  } catch (error) {
     console.error(error);
-    throw new Error("Unable to delete Url");
+    throw new Error("Unable to delete URL " + error);
   }
-
-  return data;
 }
