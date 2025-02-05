@@ -88,7 +88,10 @@ export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
     console.error(error);
     throw new Error("Unable to create URL " + error);
   }
-  return await response.json();
+  const json = await response.json();
+  json.qr = qr;
+  json.title = title;
+  return json
 }
 
 export async function deleteUrl(id) {
