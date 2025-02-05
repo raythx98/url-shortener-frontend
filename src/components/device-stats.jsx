@@ -17,6 +17,8 @@ export default function App({stats}) {
     count: deviceCount[device],
   }));
 
+  console.log("devices", result);
+
   return (
     <div style={{width: "100%", height: 300}}>
       <ResponsiveContainer>

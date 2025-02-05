@@ -13,7 +13,7 @@ function Auth() {
 
   useEffect(() => {
     if (isAuthenticated && !loading)
-      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+      navigate(`/dashboard?isLoggedIn=true${longLink ? `&createNew=${longLink}` : ""}`);
   }, [isAuthenticated, loading, navigate]);
 
   return (

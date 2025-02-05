@@ -13,6 +13,7 @@ import {useEffect, useState} from "react";
 import * as Yup from "yup";
 import Error from "./error";
 import {login} from "@/db/apiAuth";
+import {CreateLink} from "@/components/create-link";
 import {BeatLoader} from "react-spinners";
 import useFetch from "@/hooks/use-fetch";
 import {UrlState} from "@/context";
@@ -20,6 +21,7 @@ import {UrlState} from "@/context";
 const Login = () => {
   let [searchParams] = useSearchParams();
   const longLink = searchParams.get("createNew");
+  const isLoggedIn = searchParams.get("isLoggedIn");
 
   const navigate = useNavigate();
 
@@ -43,7 +45,7 @@ const Login = () => {
   useEffect(() => {
     if (error === null && data) {
       fetchUser();
-      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+      navigate(`/dashboard?isLoggedIn=true${longLink ? `&createNew=${longLink}` : ""}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, data]);
@@ -106,6 +108,9 @@ const Login = () => {
         <Button onClick={handleLogin}>
           {loading ? <BeatLoader size={10} color="#36d7b7" /> : "Login"}
         </Button>
+        <div className="ml-4">
+          <CreateLink buttonText="Continue as Guest" />
+        </div>
       </CardFooter>
     </Card>
   );

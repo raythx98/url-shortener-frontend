@@ -20,7 +20,7 @@ import {BeatLoader} from "react-spinners";
 import {UrlState} from "@/context";
 import {QRCode} from "react-qrcode-logo";
 
-export function CreateLink() {
+export function CreateLink({ buttonText = "Create New Link" }) {
   const {user} = UrlState();
 
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ export function CreateLink() {
 
   let [searchParams, setSearchParams] = useSearchParams();
   const longLink = searchParams.get("createNew");
+  const isLoggedIn = searchParams.get("isLoggedIn");
 
   const [errors, setErrors] = useState({});
   const [formValues, setFormValues] = useState({
@@ -57,7 +58,7 @@ export function CreateLink() {
     error,
     data,
     fn: fnCreateUrl,
-  } = useFetch(createUrl, {...formValues, user_id: user.id});
+  } = useFetch(createUrl, {...formValues, user_id: user?.id});
 
   useEffect(() => {
     if (error === null && data) {
@@ -92,13 +93,13 @@ export function CreateLink() {
 
   return (
     <Dialog
-      defaultOpen={longLink}
+      defaultOpen={isLoggedIn == 'true'}
       onOpenChange={(res) => {
         if (!res) setSearchParams({});
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="destructive">Create New Link</Button>
+        <Button variant="destructive">{buttonText}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>

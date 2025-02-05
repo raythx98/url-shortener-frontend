@@ -24,6 +24,9 @@ export default function Location({stats = []}) {
     count,
   }));
 
+  console.log("cities", cities);
+  console.log("sliced cities", cities.slice(0, 5));
+
   return (
     <div style={{width: "100%", height: 300}}>
       <ResponsiveContainer>

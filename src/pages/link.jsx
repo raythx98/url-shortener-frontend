@@ -84,7 +84,7 @@ const LinkPage = () => {
             <Button
               variant="ghost"
               onClick={() =>
-                navigator.clipboard.writeText(`http://localhost:5173/${link}`)
+                navigator.clipboard.writeText(`http://localhost:5173/${link}`) // TODO: Make domain configurable(?)
               }
             >
               <Copy />
@@ -126,14 +126,14 @@ const LinkPage = () => {
                   <CardTitle>Total Clicks</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>{data?.clicks?.length}</p>
+                  <p>{data?.clicks?.length}</p> // TODO: Add a number of clicks
                 </CardContent>
               </Card>
 
               <CardTitle>Location Data</CardTitle>
-              <Location stats={data?.clicks} />
+              <Location stats={data?.clicks} /> // TODO: Precalculate location stats
               <CardTitle>Device Info</CardTitle>
-              <DeviceStats stats={data?.clicks} />
+              <DeviceStats stats={data?.clicks} /> // TODO: Precalculate device stats
             </CardContent>
           ) : (
             <CardContent>
