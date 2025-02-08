@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {logout} from "@/db/apiAuth";
 import useFetch from "@/hooks/use-fetch";
-import { GearIcon } from '@radix-ui/react-icons';
+import { GearIcon, HomeIcon } from '@radix-ui/react-icons';
 import {Avatar, AvatarFallback, AvatarImage} from "@radix-ui/react-avatar";
 import {LinkIcon, LogOut} from "lucide-react";
 import {Link, useNavigate} from "react-router-dom";
@@ -26,7 +26,7 @@ const Header = () => {
     <>
       <nav className="py-4 flex justify-between items-center">
         <Link to="/">
-          <img src="/logo.png" className="h-16" alt="Trimrr Logo" />
+        <HomeIcon className="w-12 h-12 mt-1" />
         </Link>
         <div className="flex gap-4">
           {!user ? (

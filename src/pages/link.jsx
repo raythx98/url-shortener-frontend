@@ -59,20 +59,20 @@ const LinkPage = () => {
       )}
       <div className="flex flex-col gap-8 sm:flex-row justify-between">
         <div className="flex flex-col items-start gap-8 rounded-lg sm:w-2/5">
-          <span className="text-6xl font-extrabold hover:underline cursor-pointer">
+          <span className="text-6xl font-extrabold hover:underline cursor-pointer break-all">
             {data?.url?.title}
           </span>
           <a
             href={`http://localhost:5173/${link}`}
             target="_blank"
-            className="text-3xl sm:text-4xl text-blue-400 font-bold hover:underline cursor-pointer"
+            className="text-3xl sm:text-4xl text-blue-400 font-bold hover:underline cursor-pointer break-all"
           >
             http://localhost:5173/{link}
           </a>
           <a
             href={data?.url?.original_url}
             target="_blank"
-            className="flex items-center gap-1 hover:underline cursor-pointer"
+            className="flex items-center gap-1 hover:underline cursor-pointer break-all"
           >
             <LinkIcon className="p-1" />
             {data?.url?.original_url}
@@ -119,21 +119,21 @@ const LinkPage = () => {
           <CardHeader>
             <CardTitle className="text-4xl font-extrabold">Stats</CardTitle>
           </CardHeader>
-          {data?.clicks && data?.clicks?.length ? (
+          {data?.total_clicks ? (
             <CardContent className="flex flex-col gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Total Clicks</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>{data?.clicks?.length}</p> // TODO: Add a number of clicks
+                  <p>{data?.total_clicks}</p>
                 </CardContent>
               </Card>
 
               <CardTitle>Location Data</CardTitle>
-              <Location stats={data?.clicks} /> // TODO: Precalculate location stats
+              <Location countries={data?.countries} />
               <CardTitle>Device Info</CardTitle>
-              <DeviceStats stats={data?.clicks} /> // TODO: Precalculate device stats
+              <DeviceStats devices={data?.devices} />
             </CardContent>
           ) : (
             <CardContent>
