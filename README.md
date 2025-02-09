@@ -1,3 +1,13 @@
-# Full Stack URL Shortener with React JS, Tailwind CSS, Supabase, Shadcn UI Tutorial 🔥🔥
-## https://youtu.be/geIwBIuo-ug
-![url shortener 4](https://github.com/piyush-eon/url-shortener/assets/51760520/dc91a72a-6a96-4cbe-a58c-15c6986d3740)
+# Full Stack URL Shortener
+### Frontend
+- React JS
+- Tailwind CSS
+- Shadcn UI
+
+Frontend has been [forked](https://github.com/piyush-eon/url-shortener) with significant changes.
+### File Storage
+- Supabase
+### Backend
+- Go
+- PostgreSQL
+- AWS EC2
