@@ -44,7 +44,7 @@ const LinkCard = ({url = [], fetchUrls}) => {
         </span>
         <span className="flex items-center gap-1 hover:underline cursor-pointer break-all">
           <LinkIcon className="p-1" />
-          {url?.original_url}
+          {url?.full_url}
         </span>
         <span className="flex items-end font-extralight text-sm flex-1">
           {new Date(url?.created_at).toLocaleString()}

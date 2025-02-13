@@ -70,12 +70,12 @@ const LinkPage = () => {
             http://localhost:5173/{link}
           </a>
           <a
-            href={data?.url?.original_url}
+            href={data?.url?.full_url}
             target="_blank"
             className="flex items-center gap-1 hover:underline cursor-pointer break-all"
           >
             <LinkIcon className="p-1" />
-            {data?.url?.original_url}
+            {data?.url?.full_url}
           </a>
           <span className="flex items-end font-extralight text-sm">
             {new Date(data?.url?.created_at).toLocaleString()}

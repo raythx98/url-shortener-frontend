@@ -59,7 +59,7 @@ export async function redirect(id) {
   const json = await response.json();
 
   // Redirect to the original URL
-  window.location.href = json.original_url;
+  window.location.href = json.full_url;
 }
 
 export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
