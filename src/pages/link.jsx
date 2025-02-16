@@ -63,11 +63,11 @@ const LinkPage = () => {
             {data?.url?.title}
           </span>
           <a
-            href={`http://localhost:5173/${link}`}
+            href={`${window.location.origin}/${link}`}
             target="_blank"
             className="text-3xl sm:text-4xl text-blue-400 font-bold hover:underline cursor-pointer break-all"
           >
-            http://localhost:5173/{link}
+            {window.location.origin}/{link}
           </a>
           <a
             href={data?.url?.full_url}
@@ -84,7 +84,7 @@ const LinkPage = () => {
             <Button
               variant="ghost"
               onClick={() =>
-                navigator.clipboard.writeText(`http://localhost:5173/${link}`) // TODO: Make domain configurable(?)
+                navigator.clipboard.writeText(`${window.location.origin}/${link}`) // TODO: Make domain configurable(?)
               }
             >
               <Copy />

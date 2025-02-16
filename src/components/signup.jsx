@@ -48,6 +48,7 @@ const Signup = () => {
   }, [error, loading]);
 
   const handleSignup = async () => {
+    // TODO: Redirect to login
     setErrors([]);
     try {
       const schema = Yup.object().shape({

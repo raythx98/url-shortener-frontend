@@ -75,7 +75,7 @@ export function CreateLink({ buttonText = "Create New Link" }) {
   }, [error, data]);
 
   const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(`http://localhost:5173/${data.short_url}`)
+    navigator.clipboard.writeText(`${window.location.origin}/${data.short_url}`)
   };
 
   const downloadImage = () => {
@@ -171,8 +171,8 @@ export function CreateLink({ buttonText = "Create New Link" }) {
         <div className="flex items-center gap-2">
           {/* <Card className="p-2"></Card> / */}
           <Input
-            placeholder="http://localhost:5173"
-            value="http://localhost:5173"
+            placeholder={window.location.origin}
+            value={window.location.origin}
             disabled={true}
           /> /
           <Input
@@ -187,13 +187,10 @@ export function CreateLink({ buttonText = "Create New Link" }) {
         {finalLink && (
           <div className="flex items-center">
             <FaCheckCircle className="text-green-500 ml-1 mr-3" size={40}/>
-            {/* <Card className="flex-grow p-2 mr-2">
-            http://localhost:5173/{finalLink}
-            </Card> */}
             <Input
               className="flex-grow p-2 mr-2"
-              placeholder={`http://localhost:5173/${finalLink}`}
-              value={`http://localhost:5173/${finalLink}`}
+              placeholder={`${window.location.origin}/${finalLink}`}
+              value={`${window.location.origin}/${finalLink}`}
               disabled={true}
             /> 
             <Button
