@@ -1,9 +1,9 @@
 import { getAccessToken, getRefreshToken, set } from "@/helper/session";
 
-const baseUrl = 'http://localhost:5051/api/';
+const apiUrl = import.meta.env.VITE_API_URL;
 
 async function execute(endpoint, method = 'GET', body = null) {
-    const url = `${baseUrl}${endpoint}`;
+    const url = `${apiUrl}${endpoint}`;
     const options = {
         method,
         headers: {
