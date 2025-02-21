@@ -1,0 +1,64 @@
+name: Deploy to Amazon EC2
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: deploy-to-ec2
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        env:
+          VITE_SUPABASE_URL: "https://caqzitwuslrszkfwbmve.supabase.co"
+          VITE_SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          VITE_API_URL: "http://raythx.com/api/"
+        run: npm run build
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Upload to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
+            set -e
+            rm -rf /tmp/deploy-frontend
+            mkdir -p /tmp/deploy-frontend
+          EOF
+          scp -o StrictHostKeyChecking=no -r dist/* ${EC2_USER}@${EC2_HOST}:/tmp/deploy-frontend
+
+      - name: Deploy to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
+            set -e
+            sudo mkdir -p /var/www/html && sudo cp -r /tmp/deploy-frontend/* "$_"
+            rm -rf /tmp/deploy-frontend
+          EOF
