@@ -1,6 +1,7 @@
 import { getAccessToken, getRefreshToken, set } from "@/helper/session";
 
 const apiUrl = import.meta.env.VITE_API_URL;
+const basicAuthToken = btoa(`${import.meta.env.VITE_BASIC_AUTH_USERNAME}:${import.meta.env.VITE_BASIC_AUTH_PASSWORD}`);
 
 async function execute(endpoint, method = 'GET', body = null) {
     const url = `${apiUrl}${endpoint}`;
@@ -37,6 +38,23 @@ async function execute(endpoint, method = 'GET', body = null) {
     return response
 }
 
+async function executeBasic(endpoint, method = 'GET', body = null) {
+  const url = `${apiUrl}${endpoint}`;
+  const options = {
+      method,
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${basicAuthToken}`
+      }
+  };
+
+  if (body) {
+      options.body = JSON.stringify(body);
+  }
+
+  return await fetch(url, options);
+}
+
 async function refresh() {
   const url = `${baseUrl}auth/v1/refresh`;
   const options = {
@@ -53,6 +71,10 @@ async function refresh() {
   }
 
   return response.json();
+}
+
+export async function postBasic(endpoint, body) {
+  return await executeBasic(endpoint, 'POST', body);
 }
 
 export async function post(endpoint, body) {

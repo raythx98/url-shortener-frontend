@@ -1,9 +1,9 @@
-import { get, post } from './api';
+import { get, post, postBasic } from './api';
 import { remove, set } from "@/helper/session";
 
 export async function login({email, password}) {
   try {
-    var response = await post("auth/v1/login", {
+    var response = await postBasic("auth/v1/login", {
       email: email, 
       password: password,
     });
@@ -22,7 +22,7 @@ export async function login({email, password}) {
 
 export async function signup({name, email, password, profile_pic}) {
   try {
-    var response = await post("auth/v1/register", {
+    var response = await postBasic("auth/v1/register", {
       email: email, 
       password: password,
     });

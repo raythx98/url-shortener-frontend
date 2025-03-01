@@ -1,5 +1,5 @@
 import {UAParser} from "ua-parser-js";
-import { get, post, del } from "./api";
+import { get, del, postBasic } from "./api";
 import supabase, {supabaseUrl} from "./supabase";
 
 export async function getUrls() {
@@ -43,7 +43,7 @@ export async function redirect(id) {
   const {city, country_name: country} = await location.json();
 
   try {
-    var response = await post(`urls/v1/redirect/${id}`, {
+    var response = await postBasic(`urls/v1/redirect/${id}`, {
       city: city,
       country: country,
       device: device,
@@ -75,7 +75,7 @@ export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
   const qr = `${supabaseUrl}/storage/v1/object/public/qrs/${fileName}`;
 
   try {
-    var response = await post(`urls/v1`, {
+    var response = await postBasic(`urls/v1`, {
       title: title,
       full_url: fullUrl,
       custom_url: customUrl,
