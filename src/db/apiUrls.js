@@ -1,6 +1,7 @@
 import {UAParser} from "ua-parser-js";
-import { get, del, postBasic } from "./api";
+import { get, post, del, postBasic } from "./api";
 import supabase, {supabaseUrl} from "./supabase";
+import { getAccessToken } from "@/helper/session";
 
 export async function getUrls() {
   try {
@@ -75,12 +76,21 @@ export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
   const qr = `${supabaseUrl}/storage/v1/object/public/qrs/${fileName}`;
 
   try {
-    var response = await postBasic(`urls/v1`, {
-      title: title,
-      full_url: fullUrl,
-      custom_url: customUrl,
-      qr: qr,
-    });
+    if (getAccessToken() === null || getAccessToken() === "") {
+      var response = await postBasic(`urls/v1`, {
+        title: title,
+        full_url: fullUrl,
+        custom_url: customUrl,
+        qr: qr,
+      });
+    } else {
+      var response = await post(`urls/v1`, {
+        title: title,
+        full_url: fullUrl,
+        custom_url: customUrl,
+        qr: qr,
+      });
+    }
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
