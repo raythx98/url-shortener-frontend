@@ -33,6 +33,10 @@ export async function signup({name, email, password, profile_pic}) {
     console.error(error);
     throw new Error("Unable to register: " + error);
   }
+
+  var json = await response.json();
+  set(json);
+  return json
 }
 
 export async function getCurrentUser() {

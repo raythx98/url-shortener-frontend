@@ -12,9 +12,10 @@ import {
 } from "./ui/card";
 import {Button} from "./ui/button";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import {signup} from "@/db/apiAuth";
+import {signup} from "@/api/apiAuth";
 import {BeatLoader} from "react-spinners";
 import useFetch from "@/hooks/use-fetch";
+import {UrlState} from "@/context";
 
 const Signup = () => {
   let [searchParams] = useSearchParams();
@@ -39,16 +40,17 @@ const Signup = () => {
   };
 
   const {loading, error, fn: fnSignup, data} = useFetch(signup, formData);
+  const {fetchUser} = UrlState();
 
   useEffect(() => {
     if (error === null && data) {
+      fetchUser();
       navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error, loading]);
 
   const handleSignup = async () => {
-    // TODO: Redirect to login
     setErrors([]);
     try {
       const schema = Yup.object().shape({

@@ -2,7 +2,7 @@ import DeviceStats from "@/components/device-stats";
 import Location from "@/components/location-stats";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {deleteUrl, getUrl} from "@/db/apiUrls";
+import {deleteUrl, getUrl} from "@/api/apiUrls";
 import useFetch from "@/hooks/use-fetch";
 import {Copy, Download, LinkIcon, Trash} from "lucide-react";
 import {useEffect} from "react";
@@ -84,7 +84,7 @@ const LinkPage = () => {
             <Button
               variant="ghost"
               onClick={() =>
-                navigator.clipboard.writeText(`${window.location.origin}/${link}`) // TODO: Make domain configurable(?)
+                navigator.clipboard.writeText(`${window.location.origin}/${link}`)
               }
             >
               <Copy />

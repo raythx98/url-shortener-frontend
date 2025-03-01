@@ -6,7 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {logout} from "@/db/apiAuth";
+import {logout} from "@/api/apiAuth";
 import useFetch from "@/hooks/use-fetch";
 import { GearIcon, HomeIcon } from '@radix-ui/react-icons';
 import {Avatar, AvatarFallback, AvatarImage} from "@radix-ui/react-avatar";

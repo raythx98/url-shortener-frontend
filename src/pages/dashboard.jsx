@@ -12,7 +12,7 @@ import Error from "@/components/error";
 
 import useFetch from "@/hooks/use-fetch";
 
-import {getUrls} from "@/db/apiUrls";
+import {getUrls} from "@/api/apiUrls";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");

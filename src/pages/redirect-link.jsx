@@ -1,4 +1,4 @@
-import {redirect} from "@/db/apiUrls";
+import {redirect} from "@/api/apiUrls";
 import useFetch from "@/hooks/use-fetch";
 import {useEffect} from "react";
 import {useParams} from "react-router-dom";
