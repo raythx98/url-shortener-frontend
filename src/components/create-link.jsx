@@ -41,12 +41,35 @@ export function CreateLink({ buttonText = "Create New Link" }) {
   const [finalLink, setFinalLink] = useState("");
 
   const schema = yup.object().shape({
-    title: yup.string().required("Title is required"),
+    title: yup
+      .string()
+      .required("Title is required")
+      .max(100, "Title must be at most 255 characters"),
     fullUrl: yup
       .string()
       .url("Must be a valid URL")
-      .required("Long URL is required"),
-    customUrl: yup.string(),
+      .required("Long URL is required")
+      .max(2048, "Long URL must be at most 255 characters"),
+    customUrl: yup
+      .string()
+      .test(
+        'custom-url-check',
+        'Custom URL must be at least 4 characters',
+        password => password.length > 0 && password.length < 4)
+      .test(
+        'custom-url-check',
+        'Custom URL must be at most 255 characters',
+        password => password.length > 0 && password.length > 255),
+      // .test(
+      //   "customUrl-min-length",
+      //   "Custom URL must be at least 4 characters",
+      //   (value) => !value || value.length === 0 || value.length >= 4
+      // )
+      // .test(
+      //   "customUrl-max-length",
+      //   "Custom URL must be at most 255 characters",
+      //   (value) => !value || value.length === 0 || value.length <= 255
+      // ),
   });
 
   const handleChange = (e) => {

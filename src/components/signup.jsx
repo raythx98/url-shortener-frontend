@@ -56,9 +56,11 @@ const Signup = () => {
       const schema = Yup.object().shape({
         email: Yup.string()
           .email("Invalid email")
+          .max(255, "Email must be at most 255 characters")
           .required("Email is required"),
         password: Yup.string()
           .min(6, "Password must be at least 6 characters")
+          .max(255, "Password must be at most 255 characters")
           .required("Password is required"),
       });
 
