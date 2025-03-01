@@ -26,18 +26,13 @@ async function execute(endpoint, method = 'GET', body = null) {
         options.headers.Authorization = `Bearer ${newTokens.access_token}`; // use new access token
         response = await fetch(url, options); // retry request
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || `Server Error: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
       } catch (error) {
         localStorage.clear(); // clear tokens
         window.location.href = '/auth'; // redirect to login
-        throw new Error('Please log in again. ' + error);
+        throw new Error('Unauthorized. Please log in again. ' + error);
       }
-    }
-
-    if (!response.ok) {
-      const errorData = await response.json();
     }
 
     return response
@@ -72,8 +67,7 @@ async function refresh() {
 
   var response = await fetch(url, options);
   if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || `Server Error: ${response.status}`);
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
   return response.json();
