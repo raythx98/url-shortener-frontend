@@ -3,6 +3,8 @@ import { getAccessToken, getRefreshToken, set } from "@/helper/session";
 const apiUrl = import.meta.env.VITE_API_URL;
 const basicAuthToken = btoa(`${import.meta.env.VITE_BASIC_AUTH_USERNAME}:${import.meta.env.VITE_BASIC_AUTH_PASSWORD}`);
 
+export const genericErrorMessage = "Something went wrong, please try again later";
+
 async function execute(endpoint, method = 'GET', body = null) {
     const url = `${apiUrl}${endpoint}`;
     const options = {
@@ -18,7 +20,6 @@ async function execute(endpoint, method = 'GET', body = null) {
     }
 
     var response = await fetch(url, options);
-
     if (response.status === 401 && getRefreshToken()) {
       try {
         const newTokens = await refresh(); // refresh tokens
@@ -26,7 +27,7 @@ async function execute(endpoint, method = 'GET', body = null) {
         options.headers.Authorization = `Bearer ${newTokens.access_token}`; // use new access token
         response = await fetch(url, options); // retry request
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(genericErrorMessage);
         }
       } catch (error) {
         localStorage.clear(); // clear tokens
@@ -56,7 +57,7 @@ async function executeBasic(endpoint, method = 'GET', body = null) {
 }
 
 async function refresh() {
-  const url = `${baseUrl}auth/v1/refresh`;
+  const url = `${apiUrl}auth/v1/refresh`;
   const options = {
     method: 'POST',
     headers: {
@@ -67,7 +68,7 @@ async function refresh() {
 
   var response = await fetch(url, options);
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    throw new Error(genericErrorMessage);
   }
 
   return response.json();

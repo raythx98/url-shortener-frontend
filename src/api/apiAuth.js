@@ -1,4 +1,4 @@
-import { get, post, postBasic } from './api';
+import { get, post, postBasic, genericErrorMessage } from './api';
 import { remove, set } from "@/helper/session";
 
 export async function login({email, password}) {
@@ -7,15 +7,18 @@ export async function login({email, password}) {
       email: email, 
       password: password,
     });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+
+    var json = await response.json();
   } catch (error) {
     console.error(error);
-    throw new Error("Unable to login: " + error);
+    throw new Error(genericErrorMessage);
   }
 
-  var json = await response.json();
+  if (!response.ok) {
+    console.error(response);
+    throw new Error(json.message || genericErrorMessage);
+  }
+  
   set(json);
   return json;
 }
@@ -26,38 +29,50 @@ export async function signup({name, email, password, profile_pic}) {
       email: email, 
       password: password,
     });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+
+    var json = await response.json();
   } catch (error) {
     console.error(error);
-    throw new Error("Unable to register: " + error);
+    throw new Error(genericErrorMessage);
   }
 
-  var json = await response.json();
+  if (!response.ok) {
+    console.error(response);
+    throw new Error(json.message || genericErrorMessage);
+  }
+
   set(json);
   return json
 }
 
 export async function getCurrentUser() {
-  var response = await get("users/v1");
-  if (response.status === 401) {
-    return null; // User not logged in
-  }
+  try {
+    var response = await get("users/v1");
+    if (response.status === 401) {
+      console.error(response);
+      return null; // User not logged in
+    }
 
-  const responseJson = await response.json();
-  return responseJson;
+    const responseJson = await response.json();
+    return responseJson;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
 
 export async function logout() {
   try {
     var response = await post("auth/v1/logout");
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      console.error(response);
+      // Avoid blocking the user if logout fails
+      // throw new Error(genericErrorMessage);
     }
   } catch (error) {
     console.error(error);
-    throw new Error("Unable to logout: " + error);
+    // Avoid blocking the user if logout fails
+    // throw new Error(genericErrorMessage);
   }
 
   remove();

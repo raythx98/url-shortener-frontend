@@ -1,35 +1,39 @@
 import {UAParser} from "ua-parser-js";
-import { get, post, del, postBasic } from "./api";
+import { get, post, del, postBasic, genericErrorMessage } from "./api";
 import supabase, {supabaseUrl} from "./supabase";
 import { getAccessToken } from "@/helper/session";
 
 export async function getUrls() {
   try {
     var response = await get("urls/v1");
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+
+    var json = await response.json()
   } catch (error) {
     console.error(error);
-    throw new Error("Unable to load URLs: " + error);
+    throw new Error(genericErrorMessage);
   }
 
-  var json = await response.json()
+  if (!response.ok) {
+    console.error(response);
+    throw new Error(json.message || genericErrorMessage);
+  }
   return json;
 }
 
 export async function getUrl({id}) {
   try {
     var response = await get(`urls/v1/${id}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    
+    var json = await response.json();
   } catch (error) {
     console.error(error);
-    throw new Error("Short Url not found: " + error);
+    throw new Error(genericErrorMessage);
   }
-
-  const json = await response.json();
+  
+  if (!response.ok) {
+    console.error(response);
+    throw new Error(json.message || genericErrorMessage);
+  }
   return json;
 }
 
@@ -49,16 +53,17 @@ export async function redirect(id) {
       country: country,
       device: device,
     });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    var json = await response.json();
   } catch (error) {
     console.error(error);
-    throw new Error("Full Url not found: " + error);
+    throw new Error(genericErrorMessage);
   }
 
-  const json = await response.json();
-
+  if (!response.ok) {
+    console.error(response);
+    throw new Error(json.message || genericErrorMessage);
+  }
+  
   // Redirect to the original URL
   window.location.href = json.full_url;
 }
@@ -67,11 +72,18 @@ export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
   const image_key = Math.random().toString(36).substr(2, 6);
   const fileName = `qr-${image_key}`;
 
-  const {error: storageError} = await supabase.storage
-    .from("qrs")
-    .upload(fileName, qrcode);
-
-  if (storageError) throw new Error(storageError.message);
+  try {
+    const {error: storageError} = await supabase.storage
+      .from("qrs")
+      .upload(fileName, qrcode);
+    if (storageError) {
+      console.error(storageError);
+      throw new Error(storageError);
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error(genericErrorMessage);
+  }
 
   const qr = `${supabaseUrl}/storage/v1/object/public/qrs/${fileName}`;
 
@@ -91,14 +103,17 @@ export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
         qr: qr,
       });
     }
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    var json = await response.json();
   } catch (error) {
     console.error(error);
-    throw new Error("Unable to create URL " + error);
+    throw new Error(genericErrorMessage);
   }
-  const json = await response.json();
+
+  if (!response.ok) {
+    console.error(response);
+    throw new Error(json.message || genericErrorMessage);
+  }
+  
   json.qr = qr;
   json.title = title;
   return json
@@ -107,11 +122,14 @@ export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
 export async function deleteUrl(id) {
   try {
     var response = await del(`urls/v1/${id}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+    var json = await response.json();
   } catch (error) {
     console.error(error);
-    throw new Error("Unable to delete URL " + error);
+    throw new Error(genericErrorMessage);
+  }
+
+  if (!response.ok) {
+    console.error(response);
+    throw new Error(json.message || genericErrorMessage);
   }
 }
