@@ -51,25 +51,15 @@ export function CreateLink({ buttonText = "Create New Link" }) {
       .required("Long URL is required")
       .max(2048, "Long URL must be at most 255 characters"),
     customUrl: yup
-      .string(),
-      // .test(
-      //   'custom-url-check',
-      //   'Custom URL must be at least 4 characters',
-      //   password => password.length > 0 && password.length < 4)
-      // .test(
-      //   'custom-url-check',
-      //   'Custom URL must be at most 255 characters',
-      //   password => password.length > 0 && password.length > 255),
-      // // .test(
-      // //   "customUrl-min-length",
-      // //   "Custom URL must be at least 4 characters",
-      // //   (value) => !value || value.length === 0 || value.length >= 4
-      // // )
-      // // .test(
-      // //   "customUrl-max-length",
-      // //   "Custom URL must be at most 255 characters",
-      // //   (value) => !value || value.length === 0 || value.length <= 255
-      // // ),
+      .string()
+      .test(
+        'custom-url-check-min-4',
+        'Custom URL must be at least 4 characters',
+        password => password.length == 0 || password.length >= 4)
+      .test(
+        'custom-url-check-max-255',
+        'Custom URL must be at most 255 characters',
+        password => password.length == 0 || password.length <= 255),
   });
 
   const handleChange = (e) => {
@@ -206,7 +196,7 @@ export function CreateLink({ buttonText = "Create New Link" }) {
             disabled={finalLink}
           />
         </div>
-        {error && <Error message={errors.message} />}
+        {errors && <Error message={errors.customUrl} />}
         {finalLink && (
           <div className="flex items-center">
             <FaCheckCircle className="text-green-500 ml-1 mr-3" size={40}/>
@@ -227,6 +217,7 @@ export function CreateLink({ buttonText = "Create New Link" }) {
             </Button>
           </div>
         )}
+        {error && <Error message={error?.message} />}
         { finalLink 
         ? (<DialogFooter className="sm:justify-start">
           <Button
