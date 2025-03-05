@@ -8,6 +8,8 @@ import {Copy, Download, LinkIcon, Trash} from "lucide-react";
 import {useEffect} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {BarLoader, BeatLoader} from "react-spinners";
+import Error from "../components/error";
+
 
 const LinkPage = () => {
   const downloadImage = () => {
@@ -43,10 +45,6 @@ const LinkPage = () => {
     fn();
   }, []);
 
-  if (error) {
-    navigate("/dashboard");
-  }
-
   let link = "";
   if (data?.url) {
     link = data?.url?.custom_url ? data?.url?.custom_url : data?.url.short_url;
@@ -54,6 +52,7 @@ const LinkPage = () => {
 
   return (
     <>
+      {error && <Error message={error?.message} />}
       {(loading) && (
         <BarLoader className="mb-4" width={"100%"} color="#36d7b7" />
       )}
