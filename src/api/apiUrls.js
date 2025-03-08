@@ -69,38 +69,18 @@ export async function redirect(id) {
 }
 
 export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
-  const image_key = Math.random().toString(36).substr(2, 6);
-  const fileName = `qr-${image_key}`;
-
-  try {
-    const {error: storageError} = await supabase.storage
-      .from("qrs")
-      .upload(fileName, qrcode);
-    if (storageError) {
-      console.error(storageError);
-      throw new Error(storageError);
-    }
-  } catch (error) {
-    console.error(error);
-    throw new Error(genericErrorMessage);
-  }
-
-  const qr = `${supabaseUrl}/storage/v1/object/public/qrs/${fileName}`;
-
   try {
     if (getAccessToken() === null || getAccessToken() === "") {
       var response = await postBasic(`urls/v1`, {
         title: title,
         full_url: fullUrl,
         custom_url: customUrl,
-        qr: qr,
       });
     } else {
       var response = await post(`urls/v1`, {
         title: title,
         full_url: fullUrl,
         custom_url: customUrl,
-        qr: qr,
       });
     }
     var json = await response.json();
@@ -114,7 +94,6 @@ export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
     throw new Error(json.message || genericErrorMessage);
   }
   
-  json.qr = qr;
   json.title = title;
   return json
 }

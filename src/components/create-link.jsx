@@ -19,14 +19,12 @@ import useFetch from "@/hooks/use-fetch";
 import {createUrl} from "@/api/apiUrls";
 import {BeatLoader} from "react-spinners";
 import {UrlState} from "@/context";
-import {QRCode} from "react-qrcode-logo";
 import { FaCheckCircle } from 'react-icons/fa'; 
 
 export function CreateLink({ buttonText = "Create New Link" }) {
   const {user} = UrlState();
 
   const navigate = useNavigate();
-  const ref = useRef();
 
   let [searchParams, setSearchParams] = useSearchParams();
   const longLink = searchParams.get("createNew");
@@ -126,10 +124,7 @@ export function CreateLink({ buttonText = "Create New Link" }) {
         throw new Error("Invalid URL");
       }
 
-      const canvas = ref.current.canvasRef.current;
-      const blob = await new Promise((resolve) => canvas.toBlob(resolve));
-
-      await fnCreateUrl(blob);
+      await fnCreateUrl();
     } catch (e) {
       e?.inner?.forEach((err) => {
         newErrors[err.path] = err.message;
@@ -161,9 +156,6 @@ export function CreateLink({ buttonText = "Create New Link" }) {
         <DialogHeader>
           <DialogTitle className="font-bold text-2xl">Create New</DialogTitle>
         </DialogHeader>
-        {formValues?.fullUrl && (
-          <QRCode ref={ref} size={250} value={formValues?.fullUrl} />
-        )}
 
         <Input
           id="title"
@@ -238,7 +230,7 @@ export function CreateLink({ buttonText = "Create New Link" }) {
             {loading ? <BeatLoader size={10} color="white" /> : "Create"}
           </Button>
         </DialogFooter>)}
-        
+
       </DialogContent>
     </Dialog>
   );
