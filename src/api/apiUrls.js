@@ -101,7 +101,6 @@ export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
 export async function deleteUrl(id) {
   try {
     var response = await del(`urls/v1/${id}`);
-    var json = await response.json();
   } catch (error) {
     console.error(error);
     throw new Error(genericErrorMessage);
@@ -109,6 +108,11 @@ export async function deleteUrl(id) {
 
   if (!response.ok) {
     console.error(response);
-    throw new Error(json.message || genericErrorMessage);
+    try {
+      var json = await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+    throw new Error(json?.message || genericErrorMessage);
   }
 }
