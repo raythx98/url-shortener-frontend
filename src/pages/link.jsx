@@ -14,21 +14,7 @@ import Error from "../components/error";
 const LinkPage = () => {
   const downloadImage = () => {
     const imageUrl = data?.url?.qr;
-    const fileName = data?.url?.title;
-
-    // Create an anchor element
-    const anchor = document.createElement("a");
-    anchor.href = imageUrl;
-    anchor.download = fileName;
-
-    // Append the anchor to the body
-    document.body.appendChild(anchor);
-
-    // Trigger the download by simulating a click event
-    anchor.click();
-
-    // Remove the anchor from the document
-    document.body.removeChild(anchor);
+    window.open(imageUrl, '_blank');
   };
   const navigate = useNavigate();
   const {id} = useParams();
