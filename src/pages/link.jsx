@@ -13,8 +13,8 @@ import Error from "../components/error";
 
 const LinkPage = () => {
   const downloadImage = () => {
-    const imageUrl = url?.qr;
-    const fileName = url?.title;
+    const imageUrl = data?.url?.qr;
+    const fileName = data?.url?.title;
 
     // Create an anchor element
     const anchor = document.createElement("a");
