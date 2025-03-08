@@ -1,5 +1,5 @@
 import { formatLink } from "@/helper/formatlink";
-import {Copy, Download} from "lucide-react";
+import {Copy, QrCode} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {
   Dialog,
@@ -213,7 +213,7 @@ export function CreateLink({ buttonText = "Create New Link" }) {
               <Copy />
             </Button>
             <Button variant="ghost" onClick={downloadImage}>
-              <Download />
+              <QrCode />
             </Button>
           </div>
         )}
