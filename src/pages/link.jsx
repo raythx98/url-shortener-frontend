@@ -4,7 +4,7 @@ import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {deleteUrl, getUrl} from "@/api/apiUrls";
 import useFetch from "@/hooks/use-fetch";
-import {Copy, Download, LinkIcon, Trash} from "lucide-react";
+import {Copy, QrCode, LinkIcon, Trash} from "lucide-react";
 import {useEffect} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {BarLoader, BeatLoader} from "react-spinners";
@@ -89,7 +89,7 @@ const LinkPage = () => {
               <Copy />
             </Button>
             <Button variant="ghost" onClick={downloadImage}>
-              <Download />
+              <QrCode />
             </Button>
             <Button
               variant="ghost"

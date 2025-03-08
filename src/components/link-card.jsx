@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import {Copy, Download, LinkIcon, Trash} from "lucide-react";
+import {Copy, QrCode, LinkIcon, Trash} from "lucide-react";
 import {Link} from "react-router-dom";
 import {Button} from "./ui/button";
 import useFetch from "@/hooks/use-fetch";
@@ -63,7 +63,7 @@ const LinkCard = ({url = [], fetchUrls}) => {
             <Copy />
           </Button>
           <Button variant="ghost" onClick={downloadImage}>
-            <Download />
+            <QrCode />
           </Button>
           <Button
             variant="ghost"
