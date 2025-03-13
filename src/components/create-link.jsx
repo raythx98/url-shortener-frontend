@@ -152,7 +152,7 @@ export function CreateLink({ buttonText = "Create New Link" }) {
       <DialogTrigger asChild>
         <Button variant="destructive">{buttonText}</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md dialog-content">
         <DialogHeader>
           <DialogTitle className="font-bold text-2xl">Create New</DialogTitle>
         </DialogHeader>
