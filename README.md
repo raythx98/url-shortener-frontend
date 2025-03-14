@@ -6,7 +6,7 @@
 
 Frontend has been [forked](https://github.com/piyush-eon/url-shortener) with significant changes.
 ### File Storage
-- Supabase
+- AWS S3
 ### Backend
 - Go
 - PostgreSQL

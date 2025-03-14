@@ -1,6 +1,5 @@
 import {UAParser} from "ua-parser-js";
 import { get, post, del, postBasic, genericErrorMessage } from "./api";
-import supabase, {supabaseUrl} from "./supabase";
 import { getAccessToken } from "@/helper/session";
 
 export async function getUrls() {
@@ -68,7 +67,7 @@ export async function redirect(id) {
   window.location.href = json.full_url;
 }
 
-export async function createUrl({title, fullUrl, customUrl, user_id}, qrcode) {
+export async function createUrl({title, fullUrl, customUrl, user_id}) {
   try {
     if (getAccessToken() === null || getAccessToken() === "") {
       var response = await postBasic(`urls/v1`, {
