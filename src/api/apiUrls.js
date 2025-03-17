@@ -43,8 +43,19 @@ export async function redirect(id) {
   const res = parser.getResult();
   const device = res.type || "desktop"; // Default to desktop if type is not detected
 
-  const location = await fetch("https://ipapi.co/json");
-  const {city, country_name: country} = await location.json();
+  var city = "Unknown";
+  var country = "Unknown";
+
+  try {
+    const location = await fetch("https://ipapi.co/json");
+    if (location.ok) {
+      const locationData = await location.json();
+      city = locationData.city || "Unknown";
+      country = locationData.country_name || "Unknown";
+    }
+  } catch (error) {
+    console.error(error);
+  }
 
   try {
     var response = await postBasic(`urls/v1/redirect/${id}`, {
